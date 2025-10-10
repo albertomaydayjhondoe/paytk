@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="art_styles">
+        <item>Pencil Sketch</item>
+        <item>Watercolor</item>
+        <item>Oil Painting</item>
+        <item>Charcoal Drawing</item>
+        <item>Anime/Manga</item>
+        <item>Pop Art</item>
+        <item>Steampunk</item>
+        <item>Cubism</item>
+        <item>Impressionism</item>
+        <item>Surrealism</item>
+        <item>Art Nouveau</item>
+        <item>Gothic</item>
+    </string-array>
+</resources>

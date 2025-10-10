@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Nuestros colores base -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Paleta de colores de nuestra App (Material Dark Theme) -->
+    <color name="primary_bg">#1E1E1E</color>
+    <color name="secondary_bg">#2D2D2D</color>
+    <color name="text_color">#E0E0E0</color>
+    <color name="accent_color">#4A90E2</color>
+    <color name="accent_hover">#5AA1F2</color>
+    <color name="border_color">#444444</color>
+    <color name="error_color">#E57373</color>
+</resources>
+    
