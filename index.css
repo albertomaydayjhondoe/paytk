@@ -1,3 +1,4 @@
+
 :root {
   --primary-bg: #1e1e1e;
   --secondary-bg: #2d2d2d;
@@ -32,6 +33,7 @@ header {
     margin-bottom: 2rem;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 1rem;
+    position: relative;
 }
 
 header h1 {
@@ -43,6 +45,23 @@ header h1 {
 header p {
     margin-top: 0.5rem;
     color: #a0a0a0;
+}
+
+#reset-key-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: #888;
+    font-size: 0.8rem;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+#reset-key-btn:hover {
+    color: var(--text-color);
+    border-color: var(--text-color);
 }
 
 
@@ -370,6 +389,75 @@ main {
 
 .camera-control-btn svg {
     fill: white;
+}
+
+/* API Key Modal */
+#api-key-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--secondary-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 500px;
+    width: 90%;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    color: var(--accent-color);
+}
+
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin: 1rem 0;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background-color: var(--primary-bg);
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.modal-content button {
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    width: 100%;
+}
+
+.modal-content button:hover {
+    background-color: var(--accent-hover-color);
+}
+
+.modal-content p {
+    color: #bbb;
+    line-height: 1.5;
+}
+
+.modal-content a {
+    color: var(--accent-color);
+    text-decoration: none;
 }
 
 @media (max-width: 768px) {

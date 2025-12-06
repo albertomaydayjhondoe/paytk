@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,26 +11,36 @@
     
     <!-- 
       CONFIGURACIÓN PARA GITHUB PAGES 
-      Como GitHub Pages es un host estático, necesitamos inyectar la variable de entorno
-      manualmente para que el código JS pueda leerla.
+      Dejamos esto aquí como fallback, pero la aplicación ahora soporta
+      ingresar la clave a través de la interfaz (UI).
     -->
     <script>
       window.process = {
         env: {
-          // TODO: PEGA TU API KEY AQUÍ ABAJO ENTRE LAS COMILLAS
-          // ADVERTENCIA: En un repositorio público, esta clave será visible.
-          // Para producción real se recomienda un backend, pero para demos esto funciona.
-          API_KEY: 'AIzaSyBsBmGoKynNWKI5MZCTwOTMBySc2qYqWUs' 
+          API_KEY: 'TU_API_KEY_AQUI' 
         }
       };
     </script>
 <link rel="stylesheet" href="/index.css">
 </head>
 <body>
+    <!-- API Key Modal -->
+    <div id="api-key-modal" class="hidden">
+        <div class="modal-content">
+            <h2>Enter Gemini API Key</h2>
+            <p>To use this application on GitHub Pages, you need to provide your own Google Gemini API Key.</p>
+            <p>You can get one for free at <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.</p>
+            <input type="text" id="api-key-input" placeholder="Paste your API Key here (starts with AIza...)">
+            <button id="save-api-key-btn">Start App</button>
+            <p style="font-size: 0.8rem; margin-top: 1rem; color: #888;">The key is stored locally in your browser and is never sent to any server other than Google's API.</p>
+        </div>
+    </div>
+
     <div class="container">
         <header>
             <h1>Media Style Transfer</h1>
             <p>Upload a photo or video and transform it into a different artistic style.</p>
+            <button id="reset-key-btn" title="Change API Key">API Key Settings</button>
         </header>
         <main>
             <div class="controls">

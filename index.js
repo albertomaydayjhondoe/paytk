@@ -1,3 +1,4 @@
+
 /**
  * @license
  * Copyright 2025 Google LLC
@@ -19,10 +20,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-
-// Use the API_KEY environment variable
-// Note: In index.html we polyfilled window.process for GitHub Pages compatibility
-const ai = new GoogleGenAI({apiKey: process.env.API_KEY});
+// Global AI instance (initialized later)
+let ai = null;
 
 // DOM elements
 const mediaUpload = document.getElementById('media-upload');
@@ -44,6 +43,12 @@ const generatedImageB = document.getElementById('generated-image-b');
 const outputVideo = document.getElementById('generated-video');
 const outputPlaceholder = document.getElementById('output-placeholder');
 const downloadBtn = document.getElementById('download-btn');
+
+// Modal Elements
+const apiKeyModal = document.getElementById('api-key-modal');
+const apiKeyInput = document.getElementById('api-key-input');
+const saveApiKeyBtn = document.getElementById('save-api-key-btn');
+const resetKeyBtn = document.getElementById('reset-key-btn');
 
 // Camera view elements
 const cameraView = document.getElementById('camera-view');
@@ -73,13 +78,17 @@ const requiredElements = [
     mediaUpload, uploadLabel, cameraBtn, imagePreview, videoPreview, previewPlaceholder,
     frameControls, frameSlider, frameCount, extractFramesBtn, styleSelect, generateBtn,
     loader, generatedImageWrapper, generatedImageA, generatedImageB, outputVideo, outputPlaceholder,
-    downloadBtn, cameraView, cameraFeed, cameraControls, photoCaptureBtn, closeCameraBtn
+    downloadBtn, cameraView, cameraFeed, cameraControls, photoCaptureBtn, closeCameraBtn,
+    apiKeyModal, apiKeyInput, saveApiKeyBtn, resetKeyBtn
 ];
 
 if (requiredElements.some(el => !el)) {
     console.error("Fatal Error: One or more essential DOM elements are missing.");
     document.body.innerHTML = "<h1>Error: Application could not start. Please contact support.</h1>";
 } else {
+    // Initialize API Key
+    checkApiKey();
+
     // Add event listeners
     uploadLabel.addEventListener('click', () => mediaUpload.click());
     cameraBtn.addEventListener('click', openCamera);
@@ -96,7 +105,66 @@ if (requiredElements.some(el => !el)) {
     // Camera listeners
     closeCameraBtn.addEventListener('click', closeCamera);
     photoCaptureBtn.addEventListener('click', takePhoto);
+    
+    // API Key Listeners
+    saveApiKeyBtn.addEventListener('click', saveApiKey);
+    resetKeyBtn.addEventListener('click', () => {
+        localStorage.removeItem('gemini_api_key');
+        window.location.reload();
+    });
 }
+
+/**
+ * Checks for API key in environment or local storage.
+ * If not found, shows the modal.
+ */
+function checkApiKey() {
+    const envKey = process.env.API_KEY;
+    const storedKey = localStorage.getItem('gemini_api_key');
+    
+    // Check if the env key is the placeholder
+    const isPlaceholder = !envKey || envKey === 'TU_API_KEY_AQUI';
+
+    if (!isPlaceholder) {
+        // Use hardcoded key from index.html
+        initializeAI(envKey);
+    } else if (storedKey) {
+        // Use stored key
+        initializeAI(storedKey);
+    } else {
+        // Show modal
+        apiKeyModal.classList.remove('hidden');
+    }
+}
+
+/**
+ * Saves the API key from the modal input to local storage.
+ */
+function saveApiKey() {
+    const key = apiKeyInput.value.trim();
+    if (key.length > 0) {
+        localStorage.setItem('gemini_api_key', key);
+        initializeAI(key);
+        apiKeyModal.classList.add('hidden');
+    } else {
+        alert("Please enter a valid API Key.");
+    }
+}
+
+/**
+ * Initializes the Gemini AI client.
+ * @param {string} key The API Key.
+ */
+function initializeAI(key) {
+    try {
+        ai = new GoogleGenAI({ apiKey: key });
+        console.log("Gemini AI initialized.");
+    } catch (e) {
+        console.error("Failed to initialize AI:", e);
+        showError("Invalid API Key format.");
+    }
+}
+
 
 /**
  * Resets the application state for animations and data.
@@ -346,6 +414,12 @@ function showError(message) {
  * Main dispatcher for the "Generate" button click.
  */
 async function handleGenerateClick() {
+  if (!ai) {
+    showError("API Key is missing. Please configure it in settings.");
+    apiKeyModal.classList.remove('hidden');
+    return;
+  }
+
   if (capturedFrames.length === 0) {
     showError('Please upload an image or extract frames first.');
     return;
@@ -398,6 +472,15 @@ async function styleFrames(framesToStyle, loadingMessagePrefix = "Styling frame"
         } catch (error) {
             // Fallback to original frame on API error
             console.error(`API error on frame ${i + 1}:`, error);
+            
+            // Check for 403 (invalid key)
+            if (error.toString().includes('403') || error.toString().includes('API_KEY_INVALID')) {
+                 showError("API Key Invalid. Please check your settings.");
+                 localStorage.removeItem('gemini_api_key');
+                 apiKeyModal.classList.remove('hidden');
+                 throw new Error("Invalid API Key"); // Stop processing
+            }
+
             console.warn(`Using original frame as fallback.`);
             styledResults.push({ src: frame.src });
         }
@@ -426,8 +509,10 @@ async function generateSingleImage() {
         downloadBtn.classList.remove('hidden');
     }
   } catch (error) {
-    console.error('API Error:', error);
-    showError('Failed to generate image. Please check your connection and try again.');
+    if (error.message !== "Invalid API Key") {
+        console.error('API Error:', error);
+        showError('Failed to generate image. Please check your connection and try again.');
+    }
   } finally {
     setLoading(false);
   }
@@ -482,6 +567,7 @@ async function processVideoWithProgressivePreview() {
         stylizedFrames = styledLowResFrames;
         startOutputAnimation(); // Show the low-res animated preview
     } catch (error) {
+        if (error.message === "Invalid API Key") return;
         console.error("Failed to generate low-quality preview:", error);
         showError("Could not generate a preview. Please try again.");
         setLoading(false);
@@ -516,6 +602,7 @@ async function processVideoWithProgressivePreview() {
         downloadBtn.classList.remove('hidden');
 
     } catch (error) {
+        if (error.message === "Invalid API Key") return;
         console.error('API Error during high-quality video generation:', error);
         showError('Failed to generate final video, but the preview is available.');
     } finally {
