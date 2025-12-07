@@ -8,7 +8,7 @@ import { GoogleGenAI } from 'https://esm.sh/@google/genai@1.0.0';
 // Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js', { scope: './' })
+    navigator.serviceWorker.register('/paytk/sw.js', { scope: '/paytk/' })
       .then(reg => console.log('✅ ServiceWorker registered'))
       .catch(err => console.log('❌ ServiceWorker failed:', err));
   });

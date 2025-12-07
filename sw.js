@@ -1,11 +1,11 @@
-const CACHE_NAME = 'image-style-transfer-v1';
+const CACHE_NAME = 'image-style-transfer-v2';
 const urlsToCache = [
-  './',
-  './index.html',
-  './index.css',
-  './index.js',
-  './icon.svg',
-  'https://esm.sh/@google/genai@1.0.0'
+  '/paytk/',
+  '/paytk/index.html',
+  '/paytk/index.css',
+  '/paytk/index.js',
+  '/paytk/icon.svg',
+  '/paytk/manifest.json'
 ];
 
 self.addEventListener('install', event => {
