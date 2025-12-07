@@ -103,3 +103,4 @@ gh auth login
 - [GitHub Secrets Documentation](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
 - [GitHub CLI](https://cli.github.com/)
 - [Google AI Studio](https://aistudio.google.com/app/apikey)
+# API Key Configured
